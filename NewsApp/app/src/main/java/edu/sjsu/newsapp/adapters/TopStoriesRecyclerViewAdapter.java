@@ -36,6 +36,12 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         mTopStories = dataset;
         notifyItemRangeChanged(0,mTopStories.size());
     }
+
+    public void addMoreData(List<Doc> newDataSet){
+        int oldSize = mTopStories.size()-1;
+        mTopStories.addAll(newDataSet);
+        notifyItemRangeChanged(oldSize,mTopStories.size());
+    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
@@ -85,6 +91,28 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public int getItemViewType(int position) {
         return (position == mTopStories.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
+    }
+    public void add(Doc doc){
+        mTopStories.add(doc);
+    }
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Doc());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = mTopStories.size() - 1;
+        Doc result = getItem(position);
+
+        if (result != null) {
+            mTopStories.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+    public Doc getItem(int position) {
+        return mTopStories.get(position);
     }
 
     public static class TopStoriesViewHolder extends RecyclerView.ViewHolder{

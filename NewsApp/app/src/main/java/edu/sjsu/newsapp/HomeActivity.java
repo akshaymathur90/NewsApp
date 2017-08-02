@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +27,8 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         handleIntent(getIntent());
+
+
     }
 
     @Override
@@ -65,6 +70,19 @@ public class HomeActivity extends AppCompatActivity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d(TAG,query);
             //use the query to search your data somehow
+
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment f =fm.findFragmentById(R.id.fragment);
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            if(f instanceof HomeActivityFragment){
+                HomeActivityFragment newHomeActivityFragment = HomeActivityFragment.newInstance(query);
+                fragmentTransaction.replace(R.id.fragment,newHomeActivityFragment).commit();
+            }
+            else{
+                HomeActivityFragment homeActivityFragment = HomeActivityFragment.newInstance(query);
+                fragmentTransaction.add(R.id.fragment,homeActivityFragment,"searchresults").commit();
+            }
+
         }
     }
 }

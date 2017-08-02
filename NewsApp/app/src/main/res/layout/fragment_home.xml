@@ -8,5 +8,10 @@
     tools:context="edu.sjsu.newsapp.HomeActivityFragment"
     tools:showIn="@layout/activity_home">
 
+<android.support.v7.widget.RecyclerView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/top_stories_recyclerview">
 
+</android.support.v7.widget.RecyclerView>
 </android.support.constraint.ConstraintLayout>

@@ -1,16 +1,27 @@
 package edu.sjsu.newsapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import edu.sjsu.newsapp.NewsArticle;
 import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.models.Doc;
 import edu.sjsu.newsapp.models.TopStories;
@@ -23,6 +34,7 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
+    public final String TAG = "StoriesRecyclerAdapter";
     List<Doc> mTopStories = new ArrayList<>();
 
     private Context mContext;
@@ -69,13 +81,44 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        Doc story = mTopStories.get(position);
+        final Doc story = mTopStories.get(position);
 
         switch (getItemViewType(position)) {
             case ITEM:
                 TopStoriesViewHolder storiesViewHolder = (TopStoriesViewHolder) holder;
 
                 storiesViewHolder.mHeadLineTextView.setText(story.getHeadline().getMain());
+                String baseURL = "https://www.nytimes.com/";
+                if(story.getMultimedia().size()>0){
+                    Log.d(TAG,"Image URL--> "+baseURL+story.getMultimedia().get(0).getUrl());
+                    Log.d(TAG,"Image Type--> "+baseURL+story.getMultimedia().get(0).getType());
+                    Glide
+                            .with(mContext)
+                            .load(baseURL+story.getMultimedia().get(0).getUrl())
+                            .into(storiesViewHolder.mImageView);
+                }
+                String pubTime = story.getPubDate();
+
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
+                Date pubDate;
+                try {
+                    pubDate = formatter.parse(pubTime);
+                    //int diff = pubDate.compareTo(Calendar.getInstance().getTime());
+                    //Log.d(TAG,"Time difference --> "+diff);
+                    storiesViewHolder.mPubTime.setText(pubDate.toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                storiesViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent newsArticle = new Intent(mContext, NewsArticle.class);
+                        newsArticle.putExtra("url",story.getWebUrl());
+                        mContext.startActivity(newsArticle);
+                    }
+                });
+
                 break;
             case LOADING:
 //                Do nothing
@@ -119,10 +162,14 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         View mView;
         private TextView mHeadLineTextView;
+        private ImageView mImageView;
+        private TextView mPubTime;
         TopStoriesViewHolder(View view){
             super(view);
             mView=view;
             mHeadLineTextView = (TextView) view.findViewById(R.id.headline_text);
+            mImageView = (ImageView) view.findViewById(R.id.news_thumbnail);
+            mPubTime = (TextView) view.findViewById(R.id.time_since_post);
         }
 
     }

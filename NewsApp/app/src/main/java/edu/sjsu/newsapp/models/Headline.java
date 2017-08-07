@@ -1,10 +1,13 @@
 
 package edu.sjsu.newsapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Headline {
+public class Headline implements Parcelable {
 
     @SerializedName("main")
     @Expose
@@ -51,4 +54,38 @@ public class Headline {
         this.contentKicker = contentKicker;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.main);
+        dest.writeString(this.printHeadline);
+        dest.writeString(this.kicker);
+        dest.writeString(this.contentKicker);
+    }
+
+    public Headline() {
+    }
+
+    protected Headline(Parcel in) {
+        this.main = in.readString();
+        this.printHeadline = in.readString();
+        this.kicker = in.readString();
+        this.contentKicker = in.readString();
+    }
+
+    public static final Parcelable.Creator<Headline> CREATOR = new Parcelable.Creator<Headline>() {
+        @Override
+        public Headline createFromParcel(Parcel source) {
+            return new Headline(source);
+        }
+
+        @Override
+        public Headline[] newArray(int size) {
+            return new Headline[size];
+        }
+    };
 }

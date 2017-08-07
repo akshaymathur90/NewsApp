@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.data.StreamAssetPathFetcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +36,7 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     public final String TAG = "StoriesRecyclerAdapter";
-    List<Doc> mTopStories = new ArrayList<>();
+    ArrayList<Doc> mTopStories = new ArrayList<>();
 
     private Context mContext;
 
@@ -44,9 +45,13 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         mContext = context;
     }
 
-    public void setDataSet(List<Doc> dataset){
+    public void setDataSet(ArrayList<Doc> dataset){
         mTopStories = dataset;
-        notifyItemRangeChanged(0,mTopStories.size());
+        //notifyItemRangeChanged(0,mTopStories.size());
+        notifyDataSetChanged();
+    }
+    public ArrayList<Doc> getDataSet(){
+        return mTopStories;
     }
 
     public void addMoreData(List<Doc> newDataSet){
@@ -86,10 +91,11 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         switch (getItemViewType(position)) {
             case ITEM:
                 TopStoriesViewHolder storiesViewHolder = (TopStoriesViewHolder) holder;
-
-                storiesViewHolder.mHeadLineTextView.setText(story.getHeadline().getMain());
+                if(story.getHeadline()!=null) {
+                    storiesViewHolder.mHeadLineTextView.setText(story.getHeadline().getMain());
+                }
                 String baseURL = "https://www.nytimes.com/";
-                if(story.getMultimedia().size()>0){
+                if(story.getMultimedia()!=null && story.getMultimedia().size()>0){
                     Log.d(TAG,"Image URL--> "+baseURL+story.getMultimedia().get(0).getUrl());
                     Log.d(TAG,"Image Type--> "+baseURL+story.getMultimedia().get(0).getType());
                     Glide
@@ -98,16 +104,18 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                             .into(storiesViewHolder.mImageView);
                 }
                 String pubTime = story.getPubDate();
+                if(pubTime!=null) {
 
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
-                Date pubDate;
-                try {
-                    pubDate = formatter.parse(pubTime);
-                    //int diff = pubDate.compareTo(Calendar.getInstance().getTime());
-                    //Log.d(TAG,"Time difference --> "+diff);
-                    storiesViewHolder.mPubTime.setText(pubDate.toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
+                    Date pubDate;
+                    try {
+                        pubDate = formatter.parse(pubTime);
+                        //int diff = pubDate.compareTo(Calendar.getInstance().getTime());
+                        //Log.d(TAG,"Time difference --> "+diff);
+                        storiesViewHolder.mPubTime.setText(pubDate.toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 storiesViewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +123,9 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                     public void onClick(View view) {
                         Intent newsArticle = new Intent(mContext, NewsArticle.class);
                         newsArticle.putExtra("url",story.getWebUrl());
+                        if(story.getHeadline()!=null) {
+                            newsArticle.putExtra("headline", story.getHeadline().getMain());
+                        }
                         mContext.startActivity(newsArticle);
                     }
                 });

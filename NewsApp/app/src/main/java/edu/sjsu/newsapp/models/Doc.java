@@ -1,11 +1,15 @@
 
 package edu.sjsu.newsapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Doc {
+public class Doc implements Parcelable {
 
     @SerializedName("web_url")
     @Expose
@@ -52,4 +56,40 @@ public class Doc {
         this.pubDate = pubDate;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.webUrl);
+        dest.writeList(this.multimedia);
+        dest.writeParcelable(this.headline, flags);
+        dest.writeString(this.pubDate);
+    }
+
+    public Doc() {
+    }
+
+    protected Doc(Parcel in) {
+        this.webUrl = in.readString();
+        this.multimedia = new ArrayList<Multimedium>();
+        in.readList(this.multimedia, Multimedium.class.getClassLoader());
+        this.headline = in.readParcelable(Headline.class.getClassLoader());
+        this.pubDate = in.readString();
+    }
+
+    public static final Parcelable.Creator<Doc> CREATOR = new Parcelable.Creator<Doc>() {
+        @Override
+        public Doc createFromParcel(Parcel source) {
+            return new Doc(source);
+        }
+
+        @Override
+        public Doc[] newArray(int size) {
+            return new Doc[size];
+        }
+    };
 }

@@ -1,25 +1,29 @@
 package edu.sjsu.newsapp;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
+
 public class HomeActivity extends AppCompatActivity {
 
     final String TAG = "Home Activity-->";
+    String queryString;
+    View mView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         handleIntent(getIntent());
+        mView = findViewById(R.id.baselayout);
 
 
     }
@@ -41,6 +46,30 @@ public class HomeActivity extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        MenuItem searchItem = menu.findItem(R.id.search);
+
+
+        Log.d(TAG, "The query is-->"+queryString);
+        if (!TextUtils.isEmpty(queryString)) {
+            Log.d(TAG, "Setting query");
+            searchItem.expandActionView();
+            searchView.setQuery(queryString, false);
+            searchView.clearFocus();
+        }
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG,"Query Text change--> "+newText);
+                queryString = newText;
+                return true;
+            }
+        });
         return true;
     }
 
@@ -85,4 +114,20 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG,"The persisting query is--> "+queryString);
+        outState.putString("query",queryString);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        queryString = savedInstanceState.getString("query");
+        Log.d(TAG,"The restored query is--> "+queryString);
+    }
+
+
 }

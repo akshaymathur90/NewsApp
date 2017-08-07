@@ -1,6 +1,8 @@
 package edu.sjsu.newsapp;
 
+import android.content.BroadcastReceiver;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,19 +24,25 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import edu.sjsu.newsapp.adapters.PaginationScrollListner;
 import edu.sjsu.newsapp.adapters.TopStoriesRecyclerViewAdapter;
+import edu.sjsu.newsapp.models.Doc;
+import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class HomeActivityFragment extends Fragment {
+public class HomeActivityFragment extends VisibleFragment {
 
     TopStoriesRecyclerViewAdapter adapter;
     LinearLayoutManager linearLayoutManager;
+    Parcelable listState;
 
     RecyclerView rv;
     ProgressBar progressBar;
+    View mView;
 
     private static final int PAGE_START = 0;
     private boolean isLoading = false;
@@ -67,6 +75,7 @@ public class HomeActivityFragment extends Fragment {
 
         rv = (RecyclerView) v.findViewById(R.id.top_stories_recyclerview);
         progressBar = (ProgressBar) v.findViewById(R.id.loadmore_progress);
+        mView =  v;
 
         adapter = new TopStoriesRecyclerViewAdapter(getActivity());
 
@@ -99,7 +108,24 @@ public class HomeActivityFragment extends Fragment {
         });
         rq = Volley.newRequestQueue(getActivity());
 
-        loadFirstPage();
+        if(savedInstanceState!=null){
+            Log.d(TAG,"****Loading from destroyed activity****");
+            Log.d(TAG,"The current page is --> " +savedInstanceState.getInt("currentpage"));
+            Log.d(TAG,"The query is --> " +savedInstanceState.getString("query"));
+
+            currentPage = savedInstanceState.getInt("currentpage");
+            mQuery = savedInstanceState.getString("query");
+            ArrayList<Doc> data =  savedInstanceState.getParcelableArrayList("dataset");
+            adapter.setDataSet(data);
+            listState = savedInstanceState.getParcelable("recyclerview");
+            TOTAL_PAGES = savedInstanceState.getInt("totalpages");
+
+        }
+        else{
+            loadFirstPage();
+        }
+
+
         
         return v;
 
@@ -107,6 +133,14 @@ public class HomeActivityFragment extends Fragment {
 
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (listState != null) {
+            linearLayoutManager.onRestoreInstanceState(listState);
+        }
     }
 
     private void loadNextPage() {
@@ -189,4 +223,18 @@ public class HomeActivityFragment extends Fragment {
         rq.add(jsObjRequest);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("query",mQuery);
+        outState.putParcelableArrayList("dataset",adapter.getDataSet());
+        outState.putInt("currentpage",currentPage);
+        outState.putParcelable("recyclerview",linearLayoutManager.onSaveInstanceState());
+        outState.putInt("totalpages",TOTAL_PAGES);
+    }
+
+    @Override
+    BroadcastReceiver getBroadcastReceiver() {
+        return new InternetCheckReceiver(mView);
+    }
 }

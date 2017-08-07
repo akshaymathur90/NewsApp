@@ -1,10 +1,13 @@
 
 package edu.sjsu.newsapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Multimedium {
+public class Multimedium implements Parcelable {
 
     @SerializedName("width")
     @Expose
@@ -84,4 +87,45 @@ public class Multimedium {
         this.type = type;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.width);
+        dest.writeString(this.url);
+        dest.writeValue(this.rank);
+        dest.writeValue(this.height);
+        dest.writeString(this.subtype);
+        dest.writeParcelable(this.legacy, flags);
+        dest.writeString(this.type);
+    }
+
+    public Multimedium() {
+    }
+
+    protected Multimedium(Parcel in) {
+        this.width = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.url = in.readString();
+        this.rank = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.height = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.subtype = in.readString();
+        this.legacy = in.readParcelable(Legacy.class.getClassLoader());
+        this.type = in.readString();
+    }
+
+    public static final Parcelable.Creator<Multimedium> CREATOR = new Parcelable.Creator<Multimedium>() {
+        @Override
+        public Multimedium createFromParcel(Parcel source) {
+            return new Multimedium(source);
+        }
+
+        @Override
+        public Multimedium[] newArray(int size) {
+            return new Multimedium[size];
+        }
+    };
 }

@@ -1,10 +1,13 @@
 
 package edu.sjsu.newsapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Legacy {
+public class Legacy implements Parcelable {
 
     @SerializedName("xlargewidth")
     @Expose
@@ -106,4 +109,48 @@ public class Legacy {
         this.thumbnailwidth = thumbnailwidth;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.xlargewidth);
+        dest.writeString(this.xlarge);
+        dest.writeValue(this.xlargeheight);
+        dest.writeString(this.wide);
+        dest.writeValue(this.widewidth);
+        dest.writeValue(this.wideheight);
+        dest.writeValue(this.thumbnailheight);
+        dest.writeString(this.thumbnail);
+        dest.writeValue(this.thumbnailwidth);
+    }
+
+    public Legacy() {
+    }
+
+    protected Legacy(Parcel in) {
+        this.xlargewidth = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.xlarge = in.readString();
+        this.xlargeheight = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.wide = in.readString();
+        this.widewidth = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.wideheight = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbnailheight = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbnail = in.readString();
+        this.thumbnailwidth = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Legacy> CREATOR = new Parcelable.Creator<Legacy>() {
+        @Override
+        public Legacy createFromParcel(Parcel source) {
+            return new Legacy(source);
+        }
+
+        @Override
+        public Legacy[] newArray(int size) {
+            return new Legacy[size];
+        }
+    };
 }

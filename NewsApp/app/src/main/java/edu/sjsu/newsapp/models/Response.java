@@ -1,6 +1,7 @@
 
 package edu.sjsu.newsapp.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +13,7 @@ public class Response {
     private Meta meta;
     @SerializedName("docs")
     @Expose
-    private List<Doc> docs = null;
+    private ArrayList<Doc> docs = null;
 
     public Meta getMeta() {
         return meta;
@@ -22,11 +23,11 @@ public class Response {
         this.meta = meta;
     }
 
-    public List<Doc> getDocs() {
+    public ArrayList<Doc> getDocs() {
         return docs;
     }
 
-    public void setDocs(List<Doc> docs) {
+    public void setDocs(ArrayList<Doc> docs) {
         this.docs = docs;
     }
 

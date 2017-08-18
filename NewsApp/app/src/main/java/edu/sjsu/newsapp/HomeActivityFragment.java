@@ -3,7 +3,6 @@ package edu.sjsu.newsapp;
 import android.content.BroadcastReceiver;
 import android.net.Uri;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,8 +26,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import edu.sjsu.newsapp.adapters.PaginationScrollListner;
-import edu.sjsu.newsapp.adapters.TopStoriesRecyclerViewAdapter;
-import edu.sjsu.newsapp.models.Doc;
+import edu.sjsu.newsapp.adapters.QueryStoriesRecyclerViewAdapter;
+import edu.sjsu.newsapp.models.querystories.Doc;
 import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 /**
@@ -36,7 +35,7 @@ import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
  */
 public class HomeActivityFragment extends VisibleFragment {
 
-    TopStoriesRecyclerViewAdapter adapter;
+    QueryStoriesRecyclerViewAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     Parcelable listState;
 
@@ -77,7 +76,7 @@ public class HomeActivityFragment extends VisibleFragment {
         progressBar = (ProgressBar) v.findViewById(R.id.loadmore_progress);
         mView =  v;
 
-        adapter = new TopStoriesRecyclerViewAdapter(getActivity());
+        adapter = new QueryStoriesRecyclerViewAdapter(getActivity());
 
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(linearLayoutManager);
@@ -158,9 +157,9 @@ public class HomeActivityFragment extends VisibleFragment {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG,"Response: " + response.toString());
                         Gson gson = new Gson();
-                        edu.sjsu.newsapp.models.Response r = null;
+                        edu.sjsu.newsapp.models.querystories.Response r = null;
                         try {
-                            r = gson.fromJson(response.getString("response"), edu.sjsu.newsapp.models.Response.class);
+                            r = gson.fromJson(response.getString("response"), edu.sjsu.newsapp.models.querystories.Response.class);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -197,9 +196,9 @@ public class HomeActivityFragment extends VisibleFragment {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG,"Response: " + response.toString());
                         Gson gson = new Gson();
-                        edu.sjsu.newsapp.models.Response r = null;
+                        edu.sjsu.newsapp.models.querystories.Response r = null;
                         try {
-                            r = gson.fromJson(response.getString("response"), edu.sjsu.newsapp.models.Response.class);
+                            r = gson.fromJson(response.getString("response"), edu.sjsu.newsapp.models.querystories.Response.class);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

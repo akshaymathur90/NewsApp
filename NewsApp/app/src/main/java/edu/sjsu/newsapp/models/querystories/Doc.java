@@ -1,5 +1,5 @@
 
-package edu.sjsu.newsapp.models;
+package edu.sjsu.newsapp.models.querystories;
 
 import android.os.Parcel;
 import android.os.Parcelable;

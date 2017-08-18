@@ -5,9 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.sjsu.newsapp.adapters.NewsTabAdapter;
 import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 public class HomeActivity extends AppCompatActivity {
@@ -24,6 +30,10 @@ public class HomeActivity extends AppCompatActivity {
     final String TAG = "Home Activity-->";
     String queryString;
     View mView;
+
+    NewsTabAdapter mNewsTabAdapter;
+    ViewPager mViewPager;
+    TabLayout mTabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +42,22 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         handleIntent(getIntent());
         mView = findViewById(R.id.baselayout);
+
+        List<String> sectionsList = new ArrayList<>();
+        sectionsList.add("home");
+        sectionsList.add("world");
+        sectionsList.add("national");
+        sectionsList.add("politics");
+        sectionsList.add("science");
+        sectionsList.add("travel");
+        mNewsTabAdapter = new NewsTabAdapter(getSupportFragmentManager(),sectionsList);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mViewPager.setAdapter(mNewsTabAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+
+
 
 
     }
@@ -111,7 +137,9 @@ public class HomeActivity extends AppCompatActivity {
                 HomeActivityFragment homeActivityFragment = HomeActivityFragment.newInstance(query);
                 fragmentTransaction.add(R.id.fragment,homeActivityFragment,"searchresults").commit();
             }
-
+            mView.setVisibility(View.VISIBLE);
+            mViewPager.setVisibility(View.GONE);
+            mTabLayout.setVisibility(View.GONE);
         }
     }
 

@@ -1,7 +1,6 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.activity;
 
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +21,9 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.sjsu.newsapp.fragments.HomeActivityFragment;
+import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.adapters.NewsTabAdapter;
-import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
     NewsTabAdapter mNewsTabAdapter;
     ViewPager mViewPager;
     TabLayout mTabLayout;
+    Boolean showingQueryFragment=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +57,10 @@ public class HomeActivity extends AppCompatActivity {
         mViewPager.setAdapter(mNewsTabAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
+        Log.d(TAG,"oncreate showqueryfragment-->" + showingQueryFragment);
 
-
-
+        if(savedInstanceState!=null)
+            showQueryFragment(savedInstanceState.getBoolean("fragmentopen"));
 
     }
 
@@ -73,7 +75,6 @@ public class HomeActivity extends AppCompatActivity {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         MenuItem searchItem = menu.findItem(R.id.search);
-
 
         Log.d(TAG, "The query is-->"+queryString);
         if (!TextUtils.isEmpty(queryString)) {
@@ -121,7 +122,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent) {
 
+
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            showingQueryFragment =true;
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d(TAG,query);
             //use the query to search your data somehow
@@ -137,9 +140,35 @@ public class HomeActivity extends AppCompatActivity {
                 HomeActivityFragment homeActivityFragment = HomeActivityFragment.newInstance(query);
                 fragmentTransaction.add(R.id.fragment,homeActivityFragment,"searchresults").commit();
             }
+            showQueryFragment(true);
+        }
+    }
+
+    public void showQueryFragment(Boolean showFragment){
+        if(showFragment){
             mView.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.GONE);
             mTabLayout.setVisibility(View.GONE);
+        }
+        else{
+            Log.d(TAG,"Closing query fragment");
+            mView.setVisibility(View.GONE);
+            mViewPager.setVisibility(View.VISIBLE);
+            mTabLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Log.d(TAG,"Back pressed");
+        if(showingQueryFragment) {
+            showQueryFragment(false);
+            showingQueryFragment=false;
+        }
+        else{
+            super.onBackPressed();
         }
     }
 
@@ -148,12 +177,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(TAG,"The persisting query is--> "+queryString);
         outState.putString("query",queryString);
+        outState.putBoolean("fragmentopen",showingQueryFragment);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         queryString = savedInstanceState.getString("query");
+        showingQueryFragment = savedInstanceState.getBoolean("fragmentopen");
         Log.d(TAG,"The restored query is--> "+queryString);
     }
 

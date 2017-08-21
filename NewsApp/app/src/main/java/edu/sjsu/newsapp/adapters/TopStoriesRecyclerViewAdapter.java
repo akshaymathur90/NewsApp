@@ -1,6 +1,7 @@
 package edu.sjsu.newsapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import edu.sjsu.newsapp.activity.NewsArticle;
 import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.models.topstories.Result;
 
@@ -52,12 +54,12 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<TopStori
 
     @Override
     public void onBindViewHolder(TopStoryViewHolder holder, int position) {
-        Result story = mTopStories.get(position);
+        final Result story = mTopStories.get(position);
 
         if(story.getTitle()!=null){
             holder.mHeadLineTextView.setText(story.getTitle());
         }
-        if(story.getMultimedia()!=null && story.getMultimedia().get(0)!=null){
+        if(story.getMultimedia()!=null && story.getMultimedia().size()>0 && story.getMultimedia().get(0)!=null){
             Log.d(TAG,"Image URL--> "+story.getMultimedia().get(0).getUrl());
             Log.d(TAG,"Image Type--> "+story.getMultimedia().get(0).getType());
             Glide
@@ -75,6 +77,17 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<TopStori
                 e.printStackTrace();
             }
         }
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newsArticle = new Intent(mContext, NewsArticle.class);
+                newsArticle.putExtra("url",story.getUrl());
+                if(story.getTitle()!=null) {
+                    newsArticle.putExtra("headline", story.getTitle());
+                }
+                mContext.startActivity(newsArticle);
+            }
+        });
 
     }
 

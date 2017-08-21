@@ -1,16 +1,14 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.fragments;
 
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +19,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 /**

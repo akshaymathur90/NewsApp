@@ -5,10 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import edu.sjsu.newsapp.SingleNewsTabFragment;
+import edu.sjsu.newsapp.fragments.SingleNewsTabFragment;
 
 /**
  * Created by akshaymathur on 8/15/17.

@@ -1,4 +1,4 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.fragments;
 
 import android.content.BroadcastReceiver;
 import android.net.Uri;
@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.adapters.PaginationScrollListner;
 import edu.sjsu.newsapp.adapters.QueryStoriesRecyclerViewAdapter;
 import edu.sjsu.newsapp.models.querystories.Doc;

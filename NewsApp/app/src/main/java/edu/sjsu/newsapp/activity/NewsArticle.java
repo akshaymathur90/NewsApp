@@ -1,14 +1,15 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.view.KeyEvent;
 import android.webkit.WebView;
+
+import edu.sjsu.newsapp.fragments.NewsDetailFragment;
+import edu.sjsu.newsapp.R;
 
 public class NewsArticle extends AppCompatActivity {
 

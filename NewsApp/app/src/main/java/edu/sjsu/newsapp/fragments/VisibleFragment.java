@@ -1,4 +1,4 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

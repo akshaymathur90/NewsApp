@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import edu.sjsu.newsapp.NewsArticle;
+import edu.sjsu.newsapp.activity.NewsArticle;
 import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.models.querystories.Doc;
 

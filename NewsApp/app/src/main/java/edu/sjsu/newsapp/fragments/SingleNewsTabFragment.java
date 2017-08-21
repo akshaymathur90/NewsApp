@@ -1,19 +1,14 @@
-package edu.sjsu.newsapp;
+package edu.sjsu.newsapp.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,12 +18,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.adapters.TopStoriesRecyclerViewAdapter;
 import edu.sjsu.newsapp.models.topstories.Result;
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/rootlayout"
     android:orientation="vertical"
-    tools:context="edu.sjsu.newsapp.HomeActivityFragment">
+    tools:context="edu.sjsu.newsapp.fragments.HomeActivityFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

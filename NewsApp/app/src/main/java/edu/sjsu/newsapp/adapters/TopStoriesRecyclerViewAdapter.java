@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.models.topstories.Result;
 
 /**
- * Created by akshaymathur on 8/17/17.
+ * Created by akshaymathur
  */
 
 public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<TopStoriesRecyclerViewAdapter.TopStoryViewHolder> {
@@ -72,7 +73,9 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<TopStori
             Date pubDate;
             try {
                 pubDate = formatter.parse(story.getPublishedDate());
-                holder.mPubTime.setText(pubDate.toString());
+                DateFormat dateFormat = DateFormat.getDateInstance();
+                dateFormat.format(pubDate);
+                holder.mPubTime.setText(dateFormat.format(pubDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -81,9 +84,9 @@ public class TopStoriesRecyclerViewAdapter extends RecyclerView.Adapter<TopStori
             @Override
             public void onClick(View view) {
                 Intent newsArticle = new Intent(mContext, NewsArticle.class);
-                newsArticle.putExtra("url",story.getUrl());
+                newsArticle.putExtra(mContext.getString(R.string.url_key),story.getUrl());
                 if(story.getTitle()!=null) {
-                    newsArticle.putExtra("headline", story.getTitle());
+                    newsArticle.putExtra(mContext.getString(R.string.headline_key), story.getTitle());
                 }
                 mContext.startActivity(newsArticle);
             }

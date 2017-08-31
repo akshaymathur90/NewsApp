@@ -10,7 +10,9 @@ import java.util.List;
 import edu.sjsu.newsapp.fragments.SingleNewsTabFragment;
 
 /**
- * Created by akshaymathur on 8/15/17.
+ * Created by akshaymathur.
+ *
+ * Fragment State Pager adapter for loading all the News tabs.
  */
 
 public class NewsTabAdapter extends FragmentStatePagerAdapter {

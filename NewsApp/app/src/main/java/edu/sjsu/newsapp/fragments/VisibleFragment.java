@@ -12,7 +12,7 @@ import android.view.View;
 import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
 /**
- * Created by akshaymathur on 8/5/17.
+ * Created by akshaymathur.
  */
 
 public abstract class VisibleFragment extends Fragment{

@@ -11,12 +11,12 @@ import android.webkit.WebView;
 import edu.sjsu.newsapp.fragments.NewsDetailFragment;
 import edu.sjsu.newsapp.R;
 
+/*
+ * Activity to host the Detailed News web view fragment.
+ */
 public class NewsArticle extends AppCompatActivity {
 
     public final String TAG = "NewsArticle";
-    public WebView mWebView;
-    ShareActionProvider mShareActionProvider;
-    String url;
     Fragment newsDetailFragment;
 
     @Override
@@ -24,12 +24,15 @@ public class NewsArticle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_article);
         FragmentManager fm = getSupportFragmentManager();
-        newsDetailFragment = NewsDetailFragment.newInstance(getIntent().getExtras().getString("url"),getIntent().getExtras().getString("headline"));
-        fm.beginTransaction().add(R.id.news_detail_container,newsDetailFragment,"detailfragment").commit();
+        newsDetailFragment = NewsDetailFragment.newInstance(getIntent()
+                .getExtras().getString(getString(R.string.url_key)),getIntent()
+                .getExtras().getString(getString(R.string.headline_key)));
+        fm.beginTransaction().add(R.id.news_detail_container,
+                newsDetailFragment,"detailfragment").commit();
     }
 
 
-
+    // Call fragment method to handle back button press.
     @Override
     public void onBackPressed() {
         ((NewsDetailFragment)newsDetailFragment).backButtonPressed();

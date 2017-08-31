@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
@@ -22,18 +23,11 @@ import android.webkit.WebViewClient;
 import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.receivers.InternetCheckReceiver;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NewsDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class NewsDetailFragment extends VisibleFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String URL_KEY = "url";
     private static final String HEADLINE_KEY = "headline";
 
-    // TODO: Rename and change types of parameters
     private String mUrl;
     private String mHeadline;
 
@@ -46,15 +40,6 @@ public class NewsDetailFragment extends VisibleFragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NewsDetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static NewsDetailFragment newInstance(String param1, String param2) {
         NewsDetailFragment fragment = new NewsDetailFragment();
         Bundle args = new Bundle();
@@ -81,16 +66,21 @@ public class NewsDetailFragment extends VisibleFragment {
         mView = v;
         Toolbar myToolbar = (Toolbar) v.findViewById(R.id.news_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(myToolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         mWebView = (WebView) v.findViewById(R.id.web_view);
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        //Setting new webview client.
         mWebView.setWebViewClient(new WebViewClient());
+        //load the url of the news article in webview.
         mWebView.loadUrl(mUrl);
 
         return v;
     }
 
+    // create share menu item to share article through apps like email and Whatsapp.
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -108,7 +98,7 @@ public class NewsDetailFragment extends VisibleFragment {
         }
 
     }
-
+    // Handle back press
     public boolean backButtonPressed(){
         // Check if the key event was the Back button and if there's history
         if (mWebView.canGoBack()) {

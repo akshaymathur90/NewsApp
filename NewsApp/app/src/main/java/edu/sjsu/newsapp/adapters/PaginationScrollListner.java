@@ -4,7 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
- * Created by akshaymathur on 8/1/17.
+ * Created by akshaymathur.
  */
 
 public abstract class PaginationScrollListner extends RecyclerView.OnScrollListener {
@@ -26,10 +26,11 @@ public abstract class PaginationScrollListner extends RecyclerView.OnScrollListe
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
+        // Logic to determine if th user has reached the end of the page.
         if (!isLoading() && !isLastPage()) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) {
+                // if yes, then load more items.
                 loadMoreItems();
             }
         }

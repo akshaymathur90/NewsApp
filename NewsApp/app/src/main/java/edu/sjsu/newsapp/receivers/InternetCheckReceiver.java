@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import edu.sjsu.newsapp.R;
 
 /**
- * Created by akshaymathur on 8/5/17.
+ * Created by akshaymathur
  */
 
 public class InternetCheckReceiver extends BroadcastReceiver{

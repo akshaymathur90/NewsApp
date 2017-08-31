@@ -7,6 +7,19 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragmentopen">fragmentopen</string>
+    <string name="querykey">query</string>
+    <string name="article_search_base_url">https://api.nytimes.com/svc/search/v2/articlesearch.json</string>
+    <string name="api_key">6973729bd76c46819a940bb6b55c6b0d</string>
+    <string name="dataset_key">dataset</string>
+    <string name="current_page_key">currentpage</string>
+    <string name="recyler_view_key">recyclerview</string>
+    <string name="total_pages_key">totalpages</string>
+    <string name="network_error_msg">Unable to connect to NYTimes.</string>
+    <string name="top_stories_base_url">https://api.nytimes.com/svc/topstories/v2/</string>
+    <string name="query_image_base_url">https://www.nytimes.com/</string>
+    <string name="url_key">url</string>
+    <string name="headline_key">headline</string>
 
     <string-array name="cheeses">
         <item>feta</item>

@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -70,18 +73,20 @@ public class HomeActivityFragment extends VisibleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mQuery = getArguments().getString("query");
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // getting the query string from fragment arguments.
+        mQuery = getArguments().getString("query");
+
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
         rv = (RecyclerView) v.findViewById(R.id.top_stories_recyclerview);
         progressBar = (ProgressBar) v.findViewById(R.id.loadmore_progress);
         mView =  v;
-
         adapter = new QueryStoriesRecyclerViewAdapter(getActivity());
-
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(linearLayoutManager);
         rv.setAdapter(adapter);
+
+        //adding a scroll listener to help with pagination of the results.
         rv.addOnScrollListener(new PaginationScrollListner(linearLayoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -106,27 +111,29 @@ public class HomeActivityFragment extends VisibleFragment {
                 return isLoading;
             }
         });
+        //creating a new request queue for network calls.
         rq = Volley.newRequestQueue(getActivity());
 
+        //restoring state after configuration change.
         if(savedInstanceState!=null){
             Log.d(TAG,"****Loading from destroyed activity****");
-            Log.d(TAG,"The current page is --> " +savedInstanceState.getInt("currentpage"));
-            Log.d(TAG,"The query is --> " +savedInstanceState.getString("query"));
+            Log.d(TAG,"The current page is --> " +savedInstanceState.getInt(getString(R.string.current_page_key)));
+            Log.d(TAG,"The query is --> " +savedInstanceState.getString(getString(R.string.querykey)));
 
-            currentPage = savedInstanceState.getInt("currentpage");
-            mQuery = savedInstanceState.getString("query");
-            ArrayList<Doc> data =  savedInstanceState.getParcelableArrayList("dataset");
+            currentPage = savedInstanceState.getInt(getString(R.string.current_page_key));
+            mQuery = savedInstanceState.getString(getString(R.string.querykey));
+            ArrayList<Doc> data =  savedInstanceState.getParcelableArrayList(getString(R.string.dataset_key));
             adapter.setDataSet(data);
-            listState = savedInstanceState.getParcelable("recyclerview");
-            TOTAL_PAGES = savedInstanceState.getInt("totalpages");
+            listState = savedInstanceState.getParcelable(getString(R.string.recyler_view_key));
+            TOTAL_PAGES = savedInstanceState.getInt(getString(R.string.total_pages_key));
 
         }
+        //proceed with loading the first page if the activity is created for the first time.
         else{
             loadFirstPage();
         }
 
 
-        
         return v;
 
 
@@ -143,10 +150,11 @@ public class HomeActivityFragment extends VisibleFragment {
         }
     }
 
+    // Method to fetch new page from the API using volley.
     private void loadNextPage() {
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        String url = getString(R.string.article_search_base_url);
         Uri uri = Uri.parse(url).buildUpon().appendQueryParameter("q",mQuery)
-                .appendQueryParameter("api-key","6973729bd76c46819a940bb6b55c6b0d")
+                .appendQueryParameter("api-key",getString(R.string.api_key))
                 .appendQueryParameter("fl","web_url,multimedia,headline,pub_date")
                 .appendQueryParameter("page",String.valueOf(currentPage))
                 .build();
@@ -175,19 +183,21 @@ public class HomeActivityFragment extends VisibleFragment {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-
+                        //Display Toast/Snackbar to inform the user of a network error.
+                        Toast.makeText(getActivity(),getString(R.string.network_error_msg),Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,error.getMessage());
                     }
                 });
 
         rq.add(jsObjRequest);
     }
 
+    // Method to fetch first page from the API using volley.
     private void loadFirstPage() {
 
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        String url = getString(R.string.article_search_base_url);
         Uri uri = Uri.parse(url).buildUpon().appendQueryParameter("q",mQuery)
-                .appendQueryParameter("api-key","6973729bd76c46819a940bb6b55c6b0d")
+                .appendQueryParameter("api-key",getString(R.string.api_key))
                 .appendQueryParameter("fl","web_url,multimedia,headline,pub_date").build();
         Log.d(TAG,"Uri path --> "+uri.toString());
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -215,7 +225,9 @@ public class HomeActivityFragment extends VisibleFragment {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
+                        //Display Toast/Snackbar to inform the user of a network error.
+                        Toast.makeText(getActivity(),getString(R.string.network_error_msg),Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,error.getMessage());
 
                     }
                 });
@@ -226,11 +238,11 @@ public class HomeActivityFragment extends VisibleFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("query",mQuery);
-        outState.putParcelableArrayList("dataset",adapter.getDataSet());
-        outState.putInt("currentpage",currentPage);
-        outState.putParcelable("recyclerview",linearLayoutManager.onSaveInstanceState());
-        outState.putInt("totalpages",TOTAL_PAGES);
+        outState.putString(getString(R.string.querykey),mQuery);
+        outState.putParcelableArrayList(getString(R.string.dataset_key),adapter.getDataSet());
+        outState.putInt(getString(R.string.current_page_key),currentPage);
+        outState.putParcelable(getString(R.string.recyler_view_key),linearLayoutManager.onSaveInstanceState());
+        outState.putInt(getString(R.string.total_pages_key),TOTAL_PAGES);
     }
 
     @Override

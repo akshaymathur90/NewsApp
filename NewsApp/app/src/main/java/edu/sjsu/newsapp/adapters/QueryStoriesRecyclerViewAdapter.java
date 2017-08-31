@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import edu.sjsu.newsapp.R;
 import edu.sjsu.newsapp.models.querystories.Doc;
 
 /**
- * Created by akshaymathur on 8/1/17.
+ * Created by akshaymathur.
  */
 
 public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -41,6 +42,7 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         mContext = context;
     }
 
+    // initialize the starting dataset.
     public void setDataSet(ArrayList<Doc> dataset){
         mTopStories = dataset;
         //notifyItemRangeChanged(0,mTopStories.size());
@@ -50,6 +52,7 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         return mTopStories;
     }
 
+    // append more data to the dataset.
     public void addMoreData(List<Doc> newDataSet){
         int oldSize = mTopStories.size()-1;
         mTopStories.addAll(newDataSet);
@@ -60,6 +63,7 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
+        // Return appropriate view holder for the view type.
         switch (viewType) {
             case ITEM:
                 viewHolder = getViewHolder(parent, inflater);
@@ -83,14 +87,16 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         final Doc story = mTopStories.get(position);
-
+        // Bind appropriate data based on the view type.
         switch (getItemViewType(position)) {
             case ITEM:
                 TopStoriesViewHolder storiesViewHolder = (TopStoriesViewHolder) holder;
                 if(story.getHeadline()!=null) {
                     storiesViewHolder.mHeadLineTextView.setText(story.getHeadline().getMain());
                 }
-                String baseURL = "https://www.nytimes.com/";
+                String baseURL = mContext.getString(R.string.query_image_base_url);
+
+                // Load images in Image View if available
                 if(story.getMultimedia()!=null && story.getMultimedia().size()>0){
                     Log.d(TAG,"Image URL--> "+baseURL+story.getMultimedia().get(0).getUrl());
                     Log.d(TAG,"Image Type--> "+baseURL+story.getMultimedia().get(0).getType());
@@ -101,26 +107,26 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 }
                 String pubTime = story.getPubDate();
                 if(pubTime!=null) {
-
+                    // Format Timestamp to local date format.
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
                     Date pubDate;
                     try {
                         pubDate = formatter.parse(pubTime);
-                        //int diff = pubDate.compareTo(Calendar.getInstance().getTime());
-                        //Log.d(TAG,"Time difference --> "+diff);
-                        storiesViewHolder.mPubTime.setText(pubDate.toString());
+                        DateFormat dateFormat = DateFormat.getDateInstance();
+                        storiesViewHolder.mPubTime.setText(dateFormat.format(pubDate));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
 
+                // On click of news article start News Details activity to display the complete article.
                 storiesViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent newsArticle = new Intent(mContext, NewsArticle.class);
-                        newsArticle.putExtra("url",story.getWebUrl());
+                        newsArticle.putExtra(mContext.getString(R.string.url_key),story.getWebUrl());
                         if(story.getHeadline()!=null) {
-                            newsArticle.putExtra("headline", story.getHeadline().getMain());
+                            newsArticle.putExtra(mContext.getString(R.string.headline_key), story.getHeadline().getMain());
                         }
                         mContext.startActivity(newsArticle);
                     }
@@ -142,6 +148,10 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public int getItemViewType(int position) {
         return (position == mTopStories.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
+
+    /*
+    Start of Helper Methods for adding and removing loading footer.
+     */
     public void add(Doc doc){
         mTopStories.add(doc);
     }
@@ -164,6 +174,10 @@ public class QueryStoriesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public Doc getItem(int position) {
         return mTopStories.get(position);
     }
+
+    /*
+    End of Helper Methods for adding and removing loading footer.
+     */
 
     public static class TopStoriesViewHolder extends RecyclerView.ViewHolder{
 
